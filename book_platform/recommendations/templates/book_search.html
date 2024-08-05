@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Search</title>
+</head>
+<body>
+    <h1>Search for Books</h1>
+    <form id="search-form">
+        <input type="text" id="query" placeholder="Enter keyword">
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#search-form').on('submit', function(e) {
+            e.preventDefault();
+            var query = $('#query').val();
+            $.ajax({
+                url: `/api/search/?query=${query}`,
+                method: 'GET',
+                success: function(data) {
+                    var resultsDiv = $('#results');
+                    resultsDiv.empty();
+                    if (data.items) {
+                        data.items.forEach(function(item) {
+                            resultsDiv.append(`<div>
+                                <h2>${item.volumeInfo.title}</h2>
+                                <p>${item.volumeInfo.description}</p>
+                                <img src="${item.volumeInfo.imageLinks.thumbnail}" alt="${item.volumeInfo.title}">
+                            </div>`);
+                        });
+                    } else {
+                        resultsDiv.append('<p>No results found.</p>');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
